@@ -34,7 +34,7 @@ type UpsertOneModel struct {
 // returns a new Mongo client object.
 // connURI -> mongodb://username:password@address:port/db?connect=direct
 func (*Mongo) NewClient(connURI string) *Client {
-	log.Print("start creating new client")
+	//log.Print("start creating new client")
 
 	clientOptions := options.Client().ApplyURI(connURI)
 	client, err := mongo.Connect(context.Background(), clientOptions)
@@ -43,7 +43,7 @@ func (*Mongo) NewClient(connURI string) *Client {
 		return nil
 	}
 
-	log.Print("created new client")
+	//log.Print("created new client")
 	return &Client{client: client}
 }
 
@@ -55,7 +55,7 @@ func (c *Client) Insert(database string, collection string, doc interface{}) err
 		log.Printf("Error while inserting document: %v", err)
 		return err
 	}
-	log.Print("Document inserted successfully")
+	//log.Print("Document inserted successfully")
 	return nil
 }
 
@@ -76,7 +76,7 @@ func (c *Client) Upsert(database string, collection string, filter interface{}, 
 	opts := options.Update().SetUpsert(true)
 	_, err := col.UpdateOne(context.Background(), filter, upsert, opts)
 	if err != nil {
-		log.Printf("Error while performing upsert: %v", err)
+		//log.Printf("Error while performing upsert: %v", err)
 		return err
 	}
 	return nil
@@ -88,12 +88,12 @@ func (c *Client) Find(database string, collection string, filter interface{}, so
 	opts := options.Find().SetSort(sort).SetLimit(limit)
 	cur, err := col.Find(context.Background(), filter, opts)
 	if err != nil {
-		log.Printf("Error while finding documents: %v", err)
+		//log.Printf("Error while finding documents: %v", err)
 		return nil, err
 	}
 	var results []bson.M
 	if err = cur.All(context.Background(), &results); err != nil {
-		log.Printf("Error while decoding documents: %v", err)
+		//log.Printf("Error while decoding documents: %v", err)
 		return nil, err
 	}
 	return results, nil
@@ -104,12 +104,12 @@ func (c *Client) Aggregate(database string, collection string, pipeline interfac
 	col := db.Collection(collection)
 	cur, err := col.Aggregate(context.Background(), pipeline)
 	if err != nil {
-		log.Printf("Error while aggregating: %v", err)
+		//log.Printf("Error while aggregating: %v", err)
 		return nil, err
 	}
 	var results []bson.M
 	if err = cur.All(context.Background(), &results); err != nil {
-		log.Printf("Error while decoding documents: %v", err)
+		//log.Printf("Error while decoding documents: %v", err)
 		return nil, err
 	}
 	return results, nil
@@ -121,7 +121,7 @@ func (c *Client) FindOne(database string, collection string, filter map[string]s
 	var result bson.M
 	err := col.FindOne(context.Background(), filter).Decode(&result)
 	if err != nil {
-		log.Printf("Error while finding the document: %v", err)
+		//log.Printf("Error while finding the document: %v", err)
 		return nil, err
 	}
 
@@ -134,7 +134,7 @@ func (c *Client) UpdateOne(database string, collection string, filter interface{
 
 	_, err := col.UpdateOne(context.Background(), filter, data)
 	if err != nil {
-		log.Printf("Error while updating the document: %v", err)
+		//log.Printf("Error while updating the document: %v", err)
 		return err
 	}
 
@@ -149,7 +149,7 @@ func (c *Client) UpdateMany(database string, collection string, filter interface
 
 	_, err := col.UpdateMany(context.Background(), filter, update)
 	if err != nil {
-		log.Printf("Error while updating the documents: %v", err)
+		//log.Printf("Error while updating the documents: %v", err)
 		return err
 	}
 
@@ -161,7 +161,7 @@ func (c *Client) FindAll(database string, collection string) ([]bson.M, error) {
 	col := db.Collection(collection)
 	cur, err := col.Find(context.Background(), bson.D{{}})
 	if err != nil {
-		log.Printf("Error while finding documents: %v", err)
+		//log.Printf("Error while finding documents: %v", err)
 		return nil, err
 	}
 
@@ -179,7 +179,7 @@ func (c *Client) DeleteOne(database string, collection string, filter map[string
 	col := db.Collection(collection)
 	_, err := col.DeleteOne(context.Background(), filter)
 	if err != nil {
-		log.Printf("Error while deleting the document: %v", err)
+		//log.Printf("Error while deleting the document: %v", err)
 		return err
 	}
 
@@ -191,7 +191,7 @@ func (c *Client) DeleteMany(database string, collection string, filter map[strin
 	col := db.Collection(collection)
 	_, err := col.DeleteMany(context.Background(), filter)
 	if err != nil {
-		log.Printf("Error while deleting the documents: %v", err)
+		//log.Printf("Error while deleting the documents: %v", err)
 		return err
 	}
 
@@ -203,7 +203,7 @@ func (c *Client) Distinct(database string, collection string, field string, filt
 	col := db.Collection(collection)
 	result, err := col.Distinct(context.Background(), field, filter)
 	if err != nil {
-		log.Printf("Error while getting distinct values: %v", err)
+		//log.Printf("Error while getting distinct values: %v", err)
 		return nil, err
 	}
 
@@ -215,7 +215,7 @@ func (c *Client) DropCollection(database string, collection string) error {
 	col := db.Collection(collection)
 	err := col.Drop(context.Background())
 	if err != nil {
-		log.Printf("Error while dropping the collection: %v", err)
+		//log.Printf("Error while dropping the collection: %v", err)
 		return err
 	}
 
@@ -227,7 +227,7 @@ func (c *Client) CountDocuments(database string, collection string, filter inter
 	col := db.Collection(collection)
 	count, err := col.CountDocuments(context.Background(), filter)
 	if err != nil {
-		log.Printf("Error while counting documents: %v", err)
+		//log.Printf("Error while counting documents: %v", err)
 		return 0, err
 	}
 	return count, nil
@@ -248,7 +248,7 @@ func (c *Client) FindOneAndUpdate(database string, collection string, filter int
 func (c *Client) Disconnect() error {
 	err := c.client.Disconnect(context.Background())
 	if err != nil {
-		log.Printf("Error while disconnecting from the database: %v", err)
+		//log.Printf("Error while disconnecting from the database: %v", err)
 		return err
 	}
 
